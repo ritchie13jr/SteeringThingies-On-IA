@@ -17,7 +17,7 @@ namespace Steerings
             return Seek.GetLinearAcceleration(Context, target);
         }
 
-        public static Vector3 GetLinearAcceleration(SteeringContext me, 
+        public static Vector3 GetLinearAcceleration(SteeringContext me,
                                                     GameObject target)
         {
             Vector3 directionToTarget;

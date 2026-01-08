@@ -112,7 +112,7 @@ namespace Steerings
                 return;
             }
 
-            if (rigidbody.isKinematic)
+            if (rigidbody.bodyType == RigidbodyType2D.Kinematic)
             {
                 // compute velocity increcment
                 Vector3 velIncrement = acceleration * Time.fixedDeltaTime;
@@ -155,7 +155,7 @@ namespace Steerings
                 Context.angularSpeed = 0;
             } 
 
-            if (rigidbody.isKinematic)
+            if (rigidbody.bodyType == RigidbodyType2D.Kinematic)
             {
                 float speedIncrement = acceleration * Time.fixedDeltaTime;
                 // compute new angular speed and clip if necessary
