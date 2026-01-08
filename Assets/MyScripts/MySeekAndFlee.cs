@@ -8,12 +8,12 @@ public class MySeekAndFlee : MonoBehaviour
     public GameObject m_Target;
 
     public enum Behaviour { Seek, Flee }
-    public Behaviour m_Behaviour;
+    public Behaviour behaviour;
 
     [Header("Speed And Acceleration")]
-    public float m_MaxSpeed = 20.0f;
-    public float m_MaxAcceleration = 5.0f;
-    Vector3 m_Velocity;
+    public float maxSpeed = 20.0f;
+    public float maxAcceleration = 5.0f;
+    Vector3 velocity;
 
     [Header("UI")]
     public static Action<Behaviour> OnBehaviourChange;
@@ -21,8 +21,8 @@ public class MySeekAndFlee : MonoBehaviour
 
     void Start() 
     {
-        OnBehaviourChange.Invoke(m_Behaviour);
-        m_AccelerationSl.value = m_MaxAcceleration;
+        OnBehaviourChange.Invoke(behaviour);
+        m_AccelerationSl.value = maxAcceleration;
     }
 
     void Update()
@@ -32,49 +32,36 @@ public class MySeekAndFlee : MonoBehaviour
             ChangeBehaviour();
         }
 
+        Vector3 directionToTarget = m_Target.transform.position - transform.position;
+        directionToTarget.Normalize();
 
-        Vector3 l_DirectionToTarget =
-            (m_Target.transform.position - transform.position);
-        float l_DistanceToTarget = l_DirectionToTarget.magnitude;
-        Debug.Log(l_DistanceToTarget);
-        l_DirectionToTarget.Normalize();
-
-        if (l_DistanceToTarget < 0.5f)
+        if (behaviour == Behaviour.Flee)
         {
-            m_Velocity = Vector3.zero;
-            return;
+            directionToTarget = -directionToTarget;
         }
 
-        if (m_Behaviour == Behaviour.Flee)
-        {
-            l_DirectionToTarget = -l_DirectionToTarget;
-        }
+        Vector3 acceleration;
 
-        Vector3 l_Acceleration;
-        if (l_DistanceToTarget < 3) 
-        {
-            l_Acceleration = l_DirectionToTarget * (m_MaxAcceleration);
-        }
-        l_Acceleration = l_DirectionToTarget * m_MaxAcceleration;
+        acceleration = directionToTarget * maxAcceleration;
 
-        m_Velocity += l_Acceleration * Time.deltaTime;
-        m_Velocity = Vector3.ClampMagnitude(m_Velocity, m_MaxSpeed);
+        velocity += acceleration * Time.deltaTime;
+        velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
 
-        transform.position += m_Velocity * Time.deltaTime;
+        transform.position += velocity * Time.deltaTime;
     }
 
     void ChangeBehaviour() 
     {
-        m_Behaviour = m_Behaviour + 1;
+        behaviour = behaviour + 1;
 
-        if (m_Behaviour > Behaviour.Flee) 
-            m_Behaviour = Behaviour.Seek;
+        if (behaviour > Behaviour.Flee) 
+            behaviour = Behaviour.Seek;
 
-        OnBehaviourChange?.Invoke(m_Behaviour);
+        OnBehaviourChange?.Invoke(behaviour);
     }
 
     public void OnAccelartionChanged(float value) 
     {
-        m_MaxAcceleration = value;
+        maxAcceleration = value;
     }
 }
