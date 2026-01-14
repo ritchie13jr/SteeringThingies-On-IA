@@ -18,16 +18,22 @@ namespace Steerings
         public override Vector3 GetLinearAcceleration()
         {
             /* COMPLETE */
-            return Vector3.zero; // remove this line when exercise completed
+            return GetLinearAcceleration(Context, target, requiredDistance);
         }
 
         
         public static Vector3 GetLinearAcceleration (SteeringContext me, GameObject target, float requiredDistance)
         {
-           
+
             /* COMPLETE */
 
-            // return Seek.GetLinearAcceleration(me, SURROGATE_TARGET);
+            Vector3 l_DirectionFromTarget = me.transform.position - target.transform.position;
+            Vector3 l_DisplacementFromTarget = l_DirectionFromTarget.normalized * requiredDistance;
+            Vector3 l_DesiredPosition = target.transform.position + l_DisplacementFromTarget;
+
+            SURROGATE_TARGET.transform.position = l_DesiredPosition;
+
+            //return Seek.GetLinearAcceleration(me, SURROGATE_TARGET);
             // In the agent's SteeringContext, parameters for arrive should be set to  1, 20, 0.1f
             return Arrive.GetLinearAcceleration(me, SURROGATE_TARGET);
         
