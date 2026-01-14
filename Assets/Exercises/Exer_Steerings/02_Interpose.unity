@@ -278,7 +278,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0045ceeb0e7735746aafebedcf545fc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Steerings.Interpose
-  rotationalPolicy: 2
+  rotationalPolicy: 0
   targetA: {fileID: 792071628}
   targetB: {fileID: 1925891154}
 --- !u!1 &113573764

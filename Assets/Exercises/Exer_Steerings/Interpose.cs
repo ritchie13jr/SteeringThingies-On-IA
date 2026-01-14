@@ -1,25 +1,24 @@
 using UnityEngine;
 using UnityEngine.Rendering;
+using static UnityEngine.GraphicsBuffer;
 
 namespace Steerings
 {
 
     public class Interpose : SteeringBehaviour
     {
-
         /*
         // remove comments for steerings that must be provided with a target 
         // remove whole block if no explicit target required
         // (if FT or FTI policies make sense, then this method must be present)    */
         public GameObject targetA;
         public GameObject targetB;
-        
+
         public override Vector3 GetLinearAcceleration()
         {
             return Interpose.GetLinearAcceleration(Context, targetA, targetB);
         }
 
-        
         public static Vector3 GetLinearAcceleration (SteeringContext me, GameObject targetA, GameObject targetB)
         {
             /* COMPLETE this method. It must return the linear acceleration (Vector3) */
