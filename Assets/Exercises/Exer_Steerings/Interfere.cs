@@ -21,17 +21,17 @@ namespace Steerings
 
         public static Vector3 GetLinearAcceleration(SteeringContext me, float distance, GameObject target)
         {
-            SteeringContext targetSteeringCon = target.GetComponent<SteeringContext>();
+            SteeringContext l_TargetSteeringCon = target.GetComponent<SteeringContext>();
 
-            if (targetSteeringCon == null) 
+            if (l_TargetSteeringCon == null) 
             {
                 return Pursue.GetLinearAcceleration(me, target);
             }
 
-            Vector3 targetDirectionOfMove = targetSteeringCon.velocity.normalized;
-            Vector3 desiredPosition = target.transform.position + (targetDirectionOfMove * distance);
+            Vector3 l_TargetDirectionOfMove = l_TargetSteeringCon.velocity.normalized;
+            Vector3 l_DesiredPosition = target.transform.position + (l_TargetDirectionOfMove * distance);
 
-            SURROGATE_TARGET.transform.position = desiredPosition;
+            SURROGATE_TARGET.transform.position = l_DesiredPosition;
 
             return Arrive.GetLinearAcceleration(me, SURROGATE_TARGET);
         }

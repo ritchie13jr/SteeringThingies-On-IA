@@ -131,6 +131,8 @@ GameObject:
   - component: {fileID: 583049239}
   - component: {fileID: 583049243}
   - component: {fileID: 583049242}
+  - component: {fileID: 583049244}
+  - component: {fileID: 583049245}
   m_Layer: 0
   m_Name: boomerang
   m_TagString: Untagged
@@ -230,7 +232,7 @@ MonoBehaviour:
   maxAngularAcceleration: 180
   maxAngularSpeed: 360
   clipAngularSpeed: 1
-  timeToDesiredSpeed: 0.1
+  timeToDesiredSpeed: 1.32
   closeEnoughRadius: 1
   slowdownRadius: 5
   timeToDesiredAngularSpeed: 0.1
@@ -279,6 +281,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rightClick: 0
+--- !u!114 &583049244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 583049238}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f86d0b7761bee7745912aa72a7089ba2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Steerings.SeekAndSpin
+  rotationalPolicy: 4
+  target: {fileID: 919272023}
+  m_AngularSpeed: 3
+--- !u!114 &583049245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 583049238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27cc2fc443d34b64aacd37ea1d779fc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Steerings.ArriveAndSpin
+  rotationalPolicy: 4
+  target: {fileID: 919272023}
+  m_AngularSpeed: 90
 --- !u!1 &919272023
 GameObject:
   m_ObjectHideFlags: 0

@@ -26,7 +26,7 @@ namespace Steerings
         public static Vector3 GetLinearAcceleration (SteeringContext me, GameObject target,
                                                      float distance, float angle)
         {
-            float l_TargetOrientation = Utils.VectorToOrientation(target.transform.right);
+            float l_TargetOrientation = target.transform.eulerAngles.z;
 
             float l_DesiredAngle = l_TargetOrientation + angle;
 
