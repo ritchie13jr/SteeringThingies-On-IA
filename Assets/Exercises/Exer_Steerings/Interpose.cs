@@ -12,6 +12,11 @@ namespace Steerings
         public GameObject targetA;
         public GameObject targetB;
 
+        public override GameObject GetTarget()
+        {
+            return targetA;
+        }
+
         public override Vector3 GetLinearAcceleration()
         {
             return Interpose.GetLinearAcceleration(Context, targetA, targetB);
