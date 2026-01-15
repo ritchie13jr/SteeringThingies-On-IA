@@ -25,9 +25,7 @@ namespace Steerings
 
         public static float GetAngularAccelaration(SteeringContext me, float angularSpeed)
         {
-            float result = (me.angularSpeed + angularSpeed) / me.timeToDesiredAngularSpeed;
-
-            return result;
+            return me.maxAngularAcceleration;
         }
 
         public static Vector3 GetLinearAcceleration (SteeringContext me, GameObject target)

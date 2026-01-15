@@ -27,21 +27,13 @@ namespace Steerings
         {
             Vector3 l_DirectionToTarget = (target.transform.position - me.transform.position);
             float l_DistanceToTarget = l_DirectionToTarget.magnitude;
-            float l_Result = 0f;
 
             if (l_DistanceToTarget < me.closeEnoughRadius) 
             {
                 return 0;
             }
 
-            if (l_DistanceToTarget > me.slowdownRadius) 
-            {
-                l_Result = (me.angularSpeed + angularSpeed) / me.timeToDesiredAngularSpeed;
-            }
-
-            float l_DesiredAngularSpeed = me.maxAngularSpeed * (l_DistanceToTarget / me.slowdownRadius);
-
-            return l_Result;
+            return me.maxAngularAcceleration;
         }
 
         public static Vector3 GetLinearAcceleration(SteeringContext me, GameObject target)
