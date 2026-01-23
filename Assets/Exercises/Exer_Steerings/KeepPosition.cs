@@ -37,7 +37,7 @@ namespace Steerings
 
             SURROGATE_TARGET.transform.position = l_DesiredPosition;
 
-            return Arrive.GetLinearAcceleration(me, SURROGATE_TARGET); // remove this line when exercise completed
+            return Arrive.GetLinearAcceleration(me, SURROGATE_TARGET); 
         }
 
     }

@@ -21,11 +21,11 @@ namespace Steerings
         public override Vector3 GetLinearAcceleration()
         {
             /* COMPLETE */
-            return Vector3.zero; // delete this line when exercise is complete
+            return GetLinearAcceleration(Context, target, requiredDistance, requiredAngle, wlr); 
         }
 
         
-        public static Vector3 GetLinearAcceleration (SteeringContext me /* COMPLETE */)
+        public static Vector3 GetLinearAcceleration (SteeringContext me, GameObject target, float distance, float angle, float wlr)
         {
             /*
              Compute both steerings
@@ -34,9 +34,17 @@ namespace Steerings
              - if lr is zero return kp
              - else return the blending of lr and kp
              */
-
             /* COMPLETE */
-            return Vector3.zero; // delete this line when exercise is complete
+
+            Vector3 lra = LinearRepulsion.GetLinearAcceleration(me);
+            Vector3 kpa = KeepPosition.GetLinearAcceleration(me, target, distance, angle);
+
+            if (lra == Vector3.zero)
+                return kpa;
+
+            Vector3 lfbAccelaration = lra * wlr + kpa * (1 - wlr);
+
+            return lfbAccelaration;
         }
     }
 }
