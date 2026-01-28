@@ -1,6 +1,7 @@
 using FSMs;
 using UnityEngine;
 using Steerings;
+using UnityEditor.Experimental.GraphView;
 
 [CreateAssetMenu(fileName = "FSM_TwoPointWandering", menuName = "Finite State Machines/FSM_TwoPointWandering", order = 1)]
 public class FSM_TwoPointWandering : FiniteStateMachine
@@ -21,6 +22,9 @@ public class FSM_TwoPointWandering : FiniteStateMachine
          * Usually this code includes .GetComponent<...> invocations */
 
         /* COMPLETE */
+        wanderAround = GetComponent<WanderAround>();
+        steeringContext = GetComponent<SteeringContext>();
+        blackboard = GetComponent<ANT_Blackboard>();
 
         base.OnEnter(); // do not remove
     }
@@ -33,6 +37,7 @@ public class FSM_TwoPointWandering : FiniteStateMachine
          * been exited. */
 
         /* COMPLETE */
+        base.DisableAllSteerings();
 
         base.OnExit();
     }
@@ -44,15 +49,17 @@ public class FSM_TwoPointWandering : FiniteStateMachine
          */
 
         State goingA = new State("Going_A",
-           () => { /* COMPLETE */},
+           () => { /* COMPLETE */wanderAround.attractor = blackboard.locationA; wanderAround.enabled = true;
+               elapsedTime = 0;},
            () => { elapsedTime += Time.deltaTime;}, 
-           () => {/* COMPLETE */}
+           () => {/* COMPLETE */  wanderAround.enabled = false; }
        );
 
         State goingB = new State("Going_B",
-           () => {/* COMPLETE */ },
-           () => { elapsedTime += Time.deltaTime; },
-           () => { /* COMPLETE */ }
+           () => {/* COMPLETE */ wanderAround.attractor = blackboard.locationB; wanderAround.enabled = true;
+               elapsedTime = 0;},
+           () => { elapsedTime += Time.deltaTime;},
+           () => { /* COMPLETE */ wanderAround.enabled = false; }
        );
 
 
@@ -60,14 +67,24 @@ public class FSM_TwoPointWandering : FiniteStateMachine
          * ---------------------------------------------------
         */
 
-        /*
-        Transition varName = new Transition("TransitionName",
-            () => { }, // write the condition checkeing code in {}
-            () => { }  // write the on trigger code in {} if any. Remove line if no on trigger action needed
-        );
-        */
-
         /* COMPLETE, create the transitions */
+
+        Transition LocationAReached = new Transition("Location A Reached",
+            () => { return SensingUtils.DistanceToTarget(gameObject, blackboard.locationA) <= blackboard.locationReachedRadius; }, // write the condition checkeing code in {}
+            () => { steeringContext.seekWeight = blackboard.initialSeekWeight; }  // write the on trigger code in {} if any. Remove line if no on trigger action needed
+        );
+
+        Transition LocationBReached = new Transition("Location B Reached",
+            () => { return SensingUtils.DistanceToTarget(gameObject, blackboard.locationB) <= blackboard.locationReachedRadius; }, // write the condition checkeing code in {}
+            () => { steeringContext.seekWeight = blackboard.initialSeekWeight; }  // write the on trigger code in {} if any. Remove line if no on trigger action needed
+        );
+
+        Transition TimeOut = new Transition("Time Out",
+            () => { return elapsedTime >= blackboard.intervalBetweenTimeOuts; }, // write the condition checkeing code in {}
+            () => { steeringContext.seekWeight += blackboard.seekIncrement;
+            }  // write the on trigger code in {} if any. Remove line if no on trigger action needed
+        );
+        
 
         /* STAGE 3: add states and transitions to the FSM 
          * ----------------------------------------------
@@ -76,6 +93,12 @@ public class FSM_TwoPointWandering : FiniteStateMachine
         AddStates(goingA, goingB);
 
         /* COMPLETE, add the transitions */
+
+        AddTransition(goingA, LocationAReached, goingB);
+        AddTransition(goingB, LocationBReached, goingA);
+
+        AddTransition(goingA, TimeOut, goingA);
+        AddTransition(goingB, TimeOut, goingB);
 
         /* STAGE 4: set the initial state */
 
