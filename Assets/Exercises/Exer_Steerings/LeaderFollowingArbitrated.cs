@@ -24,18 +24,22 @@ namespace Steerings
         public override Vector3 GetLinearAcceleration()
         {
             /* COMPLETE */
-            return Vector3.zero; // delete this line when exercise is complete
+            return GetLinearAcceleration(Context, target, requiredDistance, requiredAngle);
         }
 
         
-        public static Vector3 GetLinearAcceleration (SteeringContext me /* COMPLETE */)
+        public static Vector3 GetLinearAcceleration (SteeringContext me, GameObject target, float requieredDistance, float requieredAngle)
         {
             // Give priority to linear repulsion
             // (if linear repulsion is not Vector3.Zero return linear repulsion
             // else return Keep Position)
             /* COMPLETE */
 
-            return Vector3.zero; // delete this line when exercise is complete
+            Vector3 linearRepulsionAccelartion = LinearRepulsion.GetLinearAcceleration( me );
+            if (!linearRepulsionAccelartion.Equals(Vector3.zero))
+                return linearRepulsionAccelartion;
+
+            return KeepPosition.GetLinearAcceleration(me, target, requieredDistance, requieredAngle);
         }
 
     }
