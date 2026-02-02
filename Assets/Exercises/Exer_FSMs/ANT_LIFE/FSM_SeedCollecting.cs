@@ -12,7 +12,6 @@ public class FSM_SeedCollecting : FiniteStateMachine
 
     ANT_Blackboard blackboard;
     Arrive arrive;
-    GameObject seed;
 
     public override void OnEnter()
     {
@@ -45,16 +44,16 @@ public class FSM_SeedCollecting : FiniteStateMachine
        FiniteStateMachine TWOPOINT = ScriptableObject.CreateInstance<FSM_TwoPointWandering>();
 
        State GointToSeed = new State("Going To Seed",
-           () => { arrive.target = seed; arrive.enabled = true; }, // write on enter logic inside {}
+           () => { arrive.target = blackboard.seed; arrive.enabled = true; }, // write on enter logic inside {}
            () => { }, // write in state logic inside {}
            () => { arrive.enabled = false; }  // write on exit logic inisde {}  
        );
 
        State TransportingSeedToNest = new State("Transporting Seed To Nest",
-           () => { arrive.target = blackboard.nest; arrive.enabled = true; seed.transform.parent = gameObject.transform;
+           () => { arrive.target = blackboard.nest; arrive.enabled = true; blackboard.seed.transform.parent = gameObject.transform;
                }, // write on enter logic inside {}
            () => { }, // write in state logic inside {}
-           () => { arrive.enabled = false; seed.transform.parent = null; seed.tag = "Untagged"; }  // write on exit logic inisde {}  
+           () => { arrive.enabled = false; blackboard.seed.transform.parent = null; }  // write on exit logic inisde {}  
        );
 
 
@@ -65,12 +64,13 @@ public class FSM_SeedCollecting : FiniteStateMachine
 
       
        Transition NearbySeedDetected = new Transition("NearbySeedDetected",
-           () => { seed = SensingUtils.FindInstanceWithinRadius(gameObject, "SEED", blackboard.seedDetectionRadius);
-               return seed != null;}
+           () => { blackboard.seed = SensingUtils.FindInstanceWithinRadius(gameObject, "SEED", blackboard.seedDetectionRadius);
+               return blackboard.seed != null;}
        );
 
        Transition SeedReached = new Transition("SeedReeached",
-           () => { return SensingUtils.DistanceToTarget(gameObject, seed) <= blackboard.seedReachedRadius; }
+           () => { blackboard.seed.tag = "Untagged";
+               return SensingUtils.DistanceToTarget(gameObject, blackboard.seed) <= blackboard.seedReachedRadius; }
        );
 
        Transition NestReached = new Transition("NestReeached",

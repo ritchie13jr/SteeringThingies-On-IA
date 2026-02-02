@@ -1,4 +1,5 @@
 
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -19,13 +20,26 @@ public class ANT_Blackboard : MonoBehaviour
     public float nestReachedRadius = 20.0f;
 
 
-    //[Header("Peril Fleeing")]
-   
+    [Header("Peril Fleeing")]
+    public GameObject peril;
+    public float perilCloseRadius = 15f;
+    public float perilFarRadius = 20f;
+
+    [HideInInspector]public GameObject seed;
 
     void Start()
     {
-       
+
     }
 
-   
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, perilCloseRadius);
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, perilFarRadius);
+    }
+
+
 }
