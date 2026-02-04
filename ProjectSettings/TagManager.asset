@@ -9,6 +9,9 @@ TagManager:
   - TARGETLOC
   - GHOST
   - SCARED
+  - PREDATOR
+  - SEED
+  - PICKED
   layers:
   - Default
   - TransparentFX

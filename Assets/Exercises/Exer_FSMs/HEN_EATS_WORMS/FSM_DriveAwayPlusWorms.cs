@@ -2,6 +2,7 @@
 using FSMs;
 using UnityEngine;
 using Steerings;
+using UnityEditor.Search;
 
 [CreateAssetMenu(fileName = "FSM_DriveAwayPlusWorms", menuName = "Finite State Machines/FSM_DriveAwayPlusWorms", order = 1)]
 public class FSM_DriveAwayPlusWorms : FiniteStateMachine
@@ -16,13 +17,23 @@ public class FSM_DriveAwayPlusWorms : FiniteStateMachine
     private AudioSource audioSource;
     private GameObject theWorm;
     private float elapsedTime;
+    private SteeringContext steeringContext;
+    private GameObject chick;
+    private Vector3 normalScale;
+    private float normalMaxSpeed;
+    private float normalMaxAccelaration;
 
     public override void OnEnter()
     {
         arrive = GetComponent<Arrive>();
         wanderAround = GetComponent<WanderAround>();
         blackboard = GetComponent<HEN_Blackboard>();
+        steeringContext = GetComponent<SteeringContext>();
         audioSource = GetComponent<AudioSource>();
+
+        normalScale = gameObject.transform.localScale;
+        normalMaxSpeed = steeringContext.maxSpeed;
+        normalMaxAccelaration = steeringContext.maxAcceleration;
 
         base.OnEnter(); // do not remove
     }
@@ -30,6 +41,9 @@ public class FSM_DriveAwayPlusWorms : FiniteStateMachine
     public override void OnExit()
     {
         DisableAllSteerings();
+        steeringContext.maxAcceleration = normalMaxAccelaration;
+        steeringContext.maxSpeed = normalMaxSpeed;
+        gameObject.transform.localScale = normalScale;
         audioSource.Stop();
         base.OnExit();
     }
@@ -42,40 +56,51 @@ public class FSM_DriveAwayPlusWorms : FiniteStateMachine
         FiniteStateMachine SEARCHWORMS = ScriptableObject.CreateInstance<FSM_SearchWorms>();
 
         State DriveAwayChick = new State("DriveAwayChick",
+            () => {
+                audioSource.clip = blackboard.angrySound;
+                audioSource.Play();
+                steeringContext.maxSpeed *= 2; steeringContext.maxAcceleration *= 2;
+                gameObject.transform.localScale *= 1.4f;
+                arrive.target = chick;
+                arrive.enabled = true;
+            }, 
             () => { }, 
-            () => { }, 
-            () => { }  
+            () => { 
+                steeringContext.maxSpeed /= 2; steeringContext.maxAcceleration /= 2; 
+                arrive.enabled = false;
+                gameObject.transform.localScale /= 1.4f;
+                audioSource.Stop();
+            }  
         );
 
-         
 
+         //STAGE 2: create the transitions with their logic(s)
+         //* ---------------------------------------------------
 
-        /* STAGE 2: create the transitions with their logic(s)
-         * ---------------------------------------------------
-
-        Transition varName = new Transition("TransitionName",
-            () => { }, // write the condition checkeing code in {}
-            () => { }  // write the on trigger code in {} if any. Remove line if no on trigger action needed
+        Transition ChickTooClose = new Transition("Chick Too Close",
+            () => { chick = SensingUtils.FindInstanceWithinRadius(gameObject, 
+                "CHICK", blackboard.chickDetectionRadius);
+                return chick != null;
+            } 
+        );
+        Transition ChickFarEnought = new Transition("Chick Far Enought",
+            () => {
+                return SensingUtils.DistanceToTarget(gameObject, chick) >= blackboard.chickFarEnoughRadius; 
+            } 
         );
 
-        */
 
-
-        /* STAGE 3: add states and transitions to the FSM 
-         * ----------------------------------------------
+         //STAGE 3: add states and transitions to the FSM 
+         //* ----------------------------------------------
             
-        AddStates(...);
+        AddStates(SEARCHWORMS, DriveAwayChick);
 
-        AddTransition(sourceState, transition, destinationState);
+        AddTransition(SEARCHWORMS, ChickTooClose, DriveAwayChick);
+        AddTransition(DriveAwayChick, ChickFarEnought, SEARCHWORMS);
 
-         */ 
 
+        // STAGE 4: set the initial state
 
-        /* STAGE 4: set the initial state
-         
-        initialState = ... 
-
-         */
-
+        initialState = SEARCHWORMS;
     }
 }

@@ -62,16 +62,18 @@ public class FSM_SeedCollecting : FiniteStateMachine
         // STAGE 2: create the transitions with their logic(s)
         //* ---------------------------------------------------
 
-      
-       Transition NearbySeedDetected = new Transition("NearbySeedDetected",
-           () => { blackboard.seed = SensingUtils.FindInstanceWithinRadius(gameObject, "SEED", blackboard.seedDetectionRadius);
-               return blackboard.seed != null;}
+
+        Transition NearbySeedDetected = new Transition("NearbySeedDetected",
+            () => { blackboard.seed = SensingUtils.FindInstanceWithinRadius(gameObject, "SEED", blackboard.seedDetectionRadius);
+                return blackboard.seed != null; },
+            () => { blackboard.seed.tag = "Untagged"; }
        );
 
        Transition SeedReached = new Transition("SeedReeached",
-           () => { blackboard.seed.tag = "Untagged";
-               return SensingUtils.DistanceToTarget(gameObject, blackboard.seed) <= blackboard.seedReachedRadius; }
+           () => { return SensingUtils.DistanceToTarget(gameObject, 
+               blackboard.seed) <= blackboard.seedReachedRadius; }
        );
+
 
        Transition NestReached = new Transition("NestReeached",
            () => { return SensingUtils.DistanceToTarget(gameObject, blackboard.nest) <= blackboard.nestReachedRadius; }

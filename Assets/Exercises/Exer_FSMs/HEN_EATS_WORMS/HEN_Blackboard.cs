@@ -10,6 +10,8 @@ public class HEN_Blackboard : MonoBehaviour
     public float chickFarEnoughRadius = 250;   // from this distance on chicks stop being an annoyance
 
     public GameObject attractor;     // hen wanders around this point
+    public float tooFarFromAttractor = 180f;
+    public float closeEnoughtToAttractor = 60f;
 
     public AudioClip angrySound;
     public AudioClip eatingSound;
