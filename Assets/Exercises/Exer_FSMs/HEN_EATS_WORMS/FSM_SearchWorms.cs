@@ -1,6 +1,7 @@
 using FSMs;
 using UnityEngine;
 using Steerings;
+using UnityEngine.AdaptivePerformance;
 
 [CreateAssetMenu(fileName = "FSM_SearchWorms", menuName = "Finite State Machines/FSM_SearchWorms", order = 1)]
 public class FSM_SearchWorms : FiniteStateMachine
@@ -24,6 +25,11 @@ public class FSM_SearchWorms : FiniteStateMachine
 
         /* COMPLETE */
 
+        arrive = GetComponent<Arrive>();
+        wanderAround = GetComponent<WanderAround>();
+        blackboard = GetComponent<HEN_Blackboard>();
+        audioSource = GetComponent<AudioSource>();
+
         base.OnEnter(); // do not remove
     }
 
@@ -33,53 +39,91 @@ public class FSM_SearchWorms : FiniteStateMachine
          * It's equivalent to the on exit action of any state 
          * Usually this code turns off behaviours that shouldn't be on when one the FSM has
          * been exited. */
-       
+
         /* COMPLETE */
 
+        DisableAllSteerings();
+        audioSource.Stop();
         base.OnExit();
     }
 
     public override void OnConstruction()
     {
         /* COMPLETE */
-        
-        /* STAGE 1: create the states with their logic(s)
-         *-----------------------------------------------
+
+        // STAGE 1: create the states with their logic(s)
+        // *-----------------------------------------------
          
-        State varName = new State("StateName",
-            () => { }, // write on enter logic inside {}
-            () => { }, // write in state logic inside {}
-            () => { }  // write on exit logic inisde {}  
+        State Wander = new State("Wander",
+            () => { audioSource.clip = blackboard.cluckingSound;
+                audioSource.Play(); wanderAround.enabled = true; }, 
+            () => { }, 
+            () => { audioSource.Stop(); wanderAround.enabled = false; }  
         );
 
-         */
-
-
-        /* STAGE 2: create the transitions with their logic(s)
-         * ---------------------------------------------------
-
-        Transition varName = new Transition("TransitionName",
-            () => { }, // write the condition checkeing code in {}
-            () => { }  // write the on trigger code in {} if any. Remove line if no on trigger action needed
+        State ReachWorm = new State("ReachWorm",
+            () => { arrive.target = theWorm; arrive.enabled = true; }, 
+            () => { }, 
+            () => { arrive.enabled = false; }  
         );
 
-        */
+        State Eat = new State("Eat",
+            () => { audioSource.clip = blackboard.eatingSound;
+                audioSource.Play(); elapsedTime = 0f; }, 
+            () => { elapsedTime += Time.deltaTime; }, 
+            () => { 
+                audioSource.Stop();
+                Destroy(theWorm);
+            }  
+        );
+
+         
 
 
-        /* STAGE 3: add states and transitions to the FSM 
-         * ----------------------------------------------
+        // STAGE 2: create the transitions with their logic(s)
+        // * ---------------------------------------------------
+
+        Transition wormDetected = new Transition("WormDetected",
+            () => { theWorm = SensingUtils.FindInstanceWithinRadius(gameObject, 
+                "WORM", blackboard.wormDetectableRadius);
+                return theWorm != null;
+            }
+        );
+
+        Transition wormReached = new Transition("WormReached",
+            () => { return SensingUtils.DistanceToTarget(gameObject, theWorm) < blackboard.wormReachedRadius; }
+        );
+
+        Transition wormVansihed = new Transition("WormVanished",
+            () => { return theWorm == null || theWorm.Equals(null); }
+        );
+
+
+        Transition timeOut = new Transition("TimeOut",
+            () => { return elapsedTime >= blackboard.timeToEatWorm; }
+        );
+
+      
+
+
+        //STAGE 3: add states and transitions to the FSM 
+        // * ----------------------------------------------
             
-        AddStates(...);
+        AddStates(Wander, ReachWorm, Eat);
 
-        AddTransition(sourceState, transition, destinationState);
+        AddTransition(Wander, wormDetected, ReachWorm);
+        AddTransition(ReachWorm, wormVansihed, Wander);
+        AddTransition(ReachWorm, wormReached, Eat);
+        AddTransition(Eat, wormVansihed, Wander);
+        AddTransition(Eat, timeOut, Wander);
 
-         */
 
 
-        /* STAGE 4: set the initial state
+
+        // STAGE 4: set the initial state
+
+        initialState = Wander;
+
          
-        initialState = ... 
-
-         */
     }
 }
