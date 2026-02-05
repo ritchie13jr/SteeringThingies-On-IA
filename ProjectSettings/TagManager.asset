@@ -12,6 +12,9 @@ TagManager:
   - PREDATOR
   - SEED
   - PICKED
+  - BATCAT
+  - CHEESE
+  - NO_SEED
   layers:
   - Default
   - TransparentFX

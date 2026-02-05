@@ -46,14 +46,14 @@ public class FSM_RestlessHen : FiniteStateMachine
                 audioSource.clip = blackboard.cluckingSound;
                 audioSource.Play();
                 wanderAround.attractor = blackboard.attractor; 
-                steeringContext.seekWeight = 0.7f;
+                steeringContext.seekWeight = blackboard.wanderWeightMax;
                 wanderAround.enabled = true;
                 spriteRenderer.color = Color.red;
             }, 
             () => { }, 
             () => { 
                 spriteRenderer.color = originalColor;
-                steeringContext.seekWeight = 0.3f;
+                steeringContext.seekWeight = blackboard.wanderWeightNormal;
                 wanderAround.enabled = false;
                 audioSource.Stop();
             }  

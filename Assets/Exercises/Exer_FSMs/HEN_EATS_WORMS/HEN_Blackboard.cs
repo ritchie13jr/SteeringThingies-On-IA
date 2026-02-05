@@ -13,6 +13,9 @@ public class HEN_Blackboard : MonoBehaviour
     public float tooFarFromAttractor = 180f;
     public float closeEnoughtToAttractor = 60f;
 
+    public float wanderWeightMax = 0.7f;
+    public float wanderWeightNormal = 0.3f;
+
     public AudioClip angrySound;
     public AudioClip eatingSound;
     public AudioClip cluckingSound;

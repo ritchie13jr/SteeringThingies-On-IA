@@ -12,11 +12,8 @@ public class FSM_DriveAwayPlusWorms : FiniteStateMachine
      * For instance: steering behaviours, blackboard, ...*/
 
     private HEN_Blackboard blackboard;
-    private WanderAround wanderAround;
     private Arrive arrive;
     private AudioSource audioSource;
-    private GameObject theWorm;
-    private float elapsedTime;
     private SteeringContext steeringContext;
     private GameObject chick;
     private Vector3 normalScale;
@@ -26,7 +23,6 @@ public class FSM_DriveAwayPlusWorms : FiniteStateMachine
     public override void OnEnter()
     {
         arrive = GetComponent<Arrive>();
-        wanderAround = GetComponent<WanderAround>();
         blackboard = GetComponent<HEN_Blackboard>();
         steeringContext = GetComponent<SteeringContext>();
         audioSource = GetComponent<AudioSource>();

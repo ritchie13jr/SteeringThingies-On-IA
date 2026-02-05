@@ -44,16 +44,24 @@ public class FSM_SeedCollecting : FiniteStateMachine
        FiniteStateMachine TWOPOINT = ScriptableObject.CreateInstance<FSM_TwoPointWandering>();
 
        State GointToSeed = new State("Going To Seed",
-           () => { arrive.target = blackboard.seed; arrive.enabled = true; }, // write on enter logic inside {}
+           () => { 
+               arrive.target = blackboard.seed; 
+               arrive.enabled = true; }, // write on enter logic inside {}
            () => { }, // write in state logic inside {}
            () => { arrive.enabled = false; }  // write on exit logic inisde {}  
        );
 
        State TransportingSeedToNest = new State("Transporting Seed To Nest",
-           () => { arrive.target = blackboard.nest; arrive.enabled = true; blackboard.seed.transform.parent = gameObject.transform;
+           () => {
+               blackboard.seed.tag = "NO_SEED";
+               blackboard.seed.transform.parent = gameObject.transform;
+               arrive.target = blackboard.nest; 
+               arrive.enabled = true; 
                }, // write on enter logic inside {}
            () => { }, // write in state logic inside {}
-           () => { arrive.enabled = false; blackboard.seed.transform.parent = null; }  // write on exit logic inisde {}  
+           () => { 
+               arrive.enabled = false; 
+               blackboard.seed.transform.parent = null; }  // write on exit logic inisde {}  
        );
 
 
@@ -64,14 +72,14 @@ public class FSM_SeedCollecting : FiniteStateMachine
 
 
         Transition NearbySeedDetected = new Transition("NearbySeedDetected",
-            () => { blackboard.seed = SensingUtils.FindInstanceWithinRadius(gameObject, "SEED", blackboard.seedDetectionRadius);
-                return blackboard.seed != null; },
-            () => { blackboard.seed.tag = "Untagged"; }
+            () => { 
+                blackboard.seed = SensingUtils.FindInstanceWithinRadius(gameObject, "SEED", blackboard.seedDetectionRadius);
+                return blackboard.seed != null; }
        );
 
        Transition SeedReached = new Transition("SeedReeached",
-           () => { return SensingUtils.DistanceToTarget(gameObject, 
-               blackboard.seed) <= blackboard.seedReachedRadius; }
+           () => { return SensingUtils.DistanceToTarget(gameObject, blackboard.seed) <= blackboard.seedReachedRadius; },
+             () => { }
        );
 
 
@@ -79,11 +87,16 @@ public class FSM_SeedCollecting : FiniteStateMachine
            () => { return SensingUtils.DistanceToTarget(gameObject, blackboard.nest) <= blackboard.nestReachedRadius; }
        );
 
+       Transition seedTaken = new Transition("Seed Taken",
+           () => { return blackboard.seed.tag != "SEED"; }
+       );
+
         // STAGE 3: add states and transitions to the FSM 
         //* ----------------------------------------------
 
         AddStates(TWOPOINT, GointToSeed, TransportingSeedToNest);
 
+        AddTransition(GointToSeed, seedTaken, TWOPOINT);
 
         AddTransition(TWOPOINT, NearbySeedDetected, GointToSeed);
         AddTransition(GointToSeed, SeedReached, TransportingSeedToNest);
