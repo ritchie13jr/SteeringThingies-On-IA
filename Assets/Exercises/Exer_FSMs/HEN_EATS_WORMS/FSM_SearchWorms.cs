@@ -15,7 +15,7 @@ public class FSM_SearchWorms : FiniteStateMachine
     private Arrive arrive;
     private AudioSource audioSource;
     private GameObject theWorm;
-    private float elapsedTime;
+    private float elapsedTime = 0f;
 
     public override void OnEnter()
     {
@@ -54,22 +54,27 @@ public class FSM_SearchWorms : FiniteStateMachine
         // STAGE 1: create the states with their logic(s)
         // *-----------------------------------------------
          
-        State Wander = new State("Wander",
+        State wander = new State("Wander",
             () => { audioSource.clip = blackboard.cluckingSound;
-                audioSource.Play(); wanderAround.enabled = true; }, 
+                audioSource.Play();
+                wanderAround.enabled = true;
+            }, 
             () => { }, 
-            () => { audioSource.Stop(); wanderAround.enabled = false; }  
+            () => { audioSource.Stop(); 
+                wanderAround.enabled = false; }  
         );
 
-        State ReachWorm = new State("ReachWorm",
+        State reachWorm = new State("ReachWorm",
             () => { arrive.target = theWorm; arrive.enabled = true; }, 
             () => { }, 
             () => { arrive.enabled = false; }  
         );
 
-        State Eat = new State("Eat",
+        State eat = new State("Eat",
             () => { audioSource.clip = blackboard.eatingSound;
-                audioSource.Play(); elapsedTime = 0f; }, 
+                audioSource.Play(); 
+                elapsedTime = 0f; 
+            }, 
             () => { elapsedTime += Time.deltaTime; }, 
             () => { 
                 audioSource.Stop();
@@ -90,13 +95,14 @@ public class FSM_SearchWorms : FiniteStateMachine
             }
         );
 
+        Transition wormVansihed = new Transition("WormVanished",
+            () => { return theWorm == null || theWorm.Equals(null); }
+        );
+
         Transition wormReached = new Transition("WormReached",
             () => { return SensingUtils.DistanceToTarget(gameObject, theWorm) < blackboard.wormReachedRadius; }
         );
 
-        Transition wormVansihed = new Transition("WormVanished",
-            () => { return theWorm == null || theWorm.Equals(null); }
-        );
 
 
         Transition timeOut = new Transition("TimeOut",
@@ -109,20 +115,20 @@ public class FSM_SearchWorms : FiniteStateMachine
         //STAGE 3: add states and transitions to the FSM 
         // * ----------------------------------------------
             
-        AddStates(Wander, ReachWorm, Eat);
+        AddStates(wander, reachWorm, eat);
 
-        AddTransition(Wander, wormDetected, ReachWorm);
-        AddTransition(ReachWorm, wormVansihed, Wander);
-        AddTransition(ReachWorm, wormReached, Eat);
-        AddTransition(Eat, wormVansihed, Wander);
-        AddTransition(Eat, timeOut, Wander);
+        AddTransition(wander, wormDetected, reachWorm);
+        AddTransition(reachWorm, wormVansihed, wander);
+        AddTransition(reachWorm, wormReached, eat);
+        AddTransition(eat, wormVansihed, wander);
+        AddTransition(eat, timeOut, wander);
 
 
 
 
         // STAGE 4: set the initial state
 
-        initialState = Wander;
+        initialState = wander;
 
          
     }

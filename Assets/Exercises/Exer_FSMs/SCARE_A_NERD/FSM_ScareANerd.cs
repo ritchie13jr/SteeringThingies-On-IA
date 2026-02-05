@@ -51,7 +51,7 @@ public class FSM_ScareANerd : FiniteStateMachine
 
         State selectTarget = new State("SelectTarget",
             () => { }, 
-            () => { victim = SensingUtils.FindInstanceWithinRadius(gameObject, 
+            () => { victim = SensingUtils.FindRandomInstanceWithinRadius(gameObject, 
                 blackboard.victimLabel, 
                 blackboard.nerdDetectionRadius); }, 
             () => { } 
