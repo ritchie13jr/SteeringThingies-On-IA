@@ -1,22 +1,16 @@
 using FSMs;
-using UnityEngine;
 using Steerings;
+using UnityEditor.Experimental.GraphView;
+using UnityEngine;
 
 [CreateAssetMenu(fileName = "FSM_CapsuleControl", menuName = "Finite State Machines/FSM_CapsuleControl", order = 1)]
 public class FSM_CapsuleControl : FiniteStateMachine
 {
-    /* Declare here, as attributes, all the variables that need to be shared among
-     * states and transitions and/or set in OnEnter or used in OnExit 
-     * For instance: steering behaviours, blackboard, ...*/
-
     private GameObject capsule;
+    private float distanceToActivate = 20.0f;
 
     public override void OnEnter()
     {
-        /* Write here the FSM initialization code. This code is execute every time the FSM is entered.
-         * It's equivalent to the on enter action of any state 
-         * Usually this code includes .GetComponent<...> invocations */
-
         capsule = gameObject.transform.Find("ProtectiveCapsule").gameObject;
 
         base.OnEnter(); // do not remove
@@ -24,11 +18,6 @@ public class FSM_CapsuleControl : FiniteStateMachine
 
     public override void OnExit()
     {
-        /* Write here the FSM exiting code. This code is execute every time the FSM is exited.
-         * It's equivalent to the on exit action of any state 
-         * Usually this code turns off behaviours that shouldn't be on when one the FSM has
-         * been exited. */
-
         capsule.SetActive(false);
         base.OnExit();
     }
@@ -37,12 +26,37 @@ public class FSM_CapsuleControl : FiniteStateMachine
     {
         
         State capsule_OFF = new State("CAPSULE OFF",
-            () => { /* COMPLETE */ }, 
-            () => { }, 
+            () => { capsule.gameObject.SetActive(false); }, 
+            () => { Debug.Log("FireNotNear"); }, 
+            () => { }  
+        );
+
+        State capsule_ON = new State("CAPSULE ON",
+            () => { capsule.gameObject.SetActive(true); }, 
+            () => { Debug.Log("FireNear"); }, 
             () => { }  
         );
 
         /* COMPLETE */
+
+        Transition fireNear = new Transition("Fire Near",
+            () => {
+                return SensingUtils.FindRandomInstanceWithinRadius(gameObject, "FIRE", distanceToActivate);
+            },
+            () => { }  
+        );
+
+        Transition fireNotNear = new Transition("Fire Near",
+            () => {
+                return !SensingUtils.FindRandomInstanceWithinRadius(gameObject, "FIRE", distanceToActivate);
+            },
+            () => { }  
+        );
+
+        AddStates(capsule_OFF, capsule_ON);
+
+        AddTransition(capsule_OFF, fireNear, capsule_ON);
+        AddTransition(capsule_ON, fireNotNear, capsule_OFF);
 
         initialState = capsule_OFF;
 

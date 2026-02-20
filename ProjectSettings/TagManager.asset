@@ -16,6 +16,10 @@ TagManager:
   - CHEESE
   - NO_SEED
   - WANDERPOINT
+  - COLLECT_WAYPOINTS
+  - FIRE
+  - NONE
+  - FREE_GUTS
   layers:
   - Default
   - TransparentFX

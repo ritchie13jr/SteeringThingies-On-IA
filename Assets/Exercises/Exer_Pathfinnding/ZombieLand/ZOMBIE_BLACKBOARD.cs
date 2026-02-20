@@ -7,15 +7,20 @@ public class ZOMBIE_BLACKBOARD : MonoBehaviour
     public float pointReachedRadius = 3;
 
     private GameObject[] wanderPoints;
+    private GameObject[] wanderCollectPoints;
     
     void Awake()
     {
         wanderPoints = GameObject.FindGameObjectsWithTag("WANDERPOINT");
-        
     }
 
     public GameObject GetRandomWanderPoint ()
     {
         return wanderPoints[Random.Range(0, wanderPoints.Length)];
+    }
+
+    public GameObject GetRandomCollectWanderPoint ()
+    {
+        return wanderCollectPoints[Random.Range(0, wanderPoints.Length)];
     }
 }

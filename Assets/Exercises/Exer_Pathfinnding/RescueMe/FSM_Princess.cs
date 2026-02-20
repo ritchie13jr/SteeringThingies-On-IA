@@ -43,43 +43,51 @@ public class FSM_Princess : FiniteStateMachine
         /* COMPLETE */
 
         /* STAGE 1: create the states with their logic(s)
-          *-----------------------------------------------
+          *-----------------------------------------------*/
 
-         State varName = new State("StateName",
-             () => { }, // write on enter logic inside {}
-             () => { }, // write in state logic inside {}
-             () => { }  // write on exit logic inisde {}  
+         State WAITINGFORPRICE = new State("WAITING FOR PRINCE",
+             () => { }, 
+             () => { }, 
+             () => { }   
          );
 
-          */
-
+         State FOLLOWPRINCE = new State("FOLLOW PRINCE",
+             () => { 
+                 pathFeeder.target = blackboard.partner;
+                 pathFeeder.enabled = true;
+             }, 
+             () => { }, 
+             () => { pathFeeder.enabled = false; }   
+         );
 
         /* STAGE 2: create the transitions with their logic(s)
-         * ---------------------------------------------------
+         * ---------------------------------------------------*/
 
-        Transition varName = new Transition("TransitionName",
-            () => { }, // write the condition checkeing code in {}
+        Transition princeHasFoundMe = new Transition("Prince has found me",
+            () => {
+                return SensingUtils.DistanceToTarget(gameObject, blackboard.partner) <= blackboard.minRadiusToTarget;
+            }, // write the condition checkeing code in {}
             () => { }  // write the on trigger code in {} if any. Remove line if no on trigger action needed
         );
 
-        */
+        
 
 
         /* STAGE 3: add states and transitions to the FSM 
-         * ----------------------------------------------
+         * ---------------------------------------------- */
             
-        AddStates(...);
+        AddStates(WAITINGFORPRICE, FOLLOWPRINCE);
 
-        AddTransition(sourceState, transition, destinationState);
-
-         */
+        AddTransition(WAITINGFORPRICE, princeHasFoundMe, FOLLOWPRINCE);
 
 
-        /* STAGE 4: set the initial state
-         
-        initialState = ... 
 
-         */
+
+        /* STAGE 4: set the initial state */
+
+        initialState = WAITINGFORPRICE;
+
+        
     }
 
 }
