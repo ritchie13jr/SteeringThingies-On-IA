@@ -9,7 +9,7 @@ public class BT_WITHDRAW_MONEY_FROM_BANK : BehaviourTree
         root = new Selector(
             new Sequence(
                 new ACTION_Arrive("theBank"),
-                new ACTION_MAkeWithdrawal(),
+                new ACTION_MakeWithdrawal(),
                 new ACTION_PlaySound("moneysound"),
                 new ACTION_Activate("theDollars"),
                 new ACTION_WaitForSeconds("3"),

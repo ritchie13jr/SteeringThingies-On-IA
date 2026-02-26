@@ -15,7 +15,7 @@ namespace FSMs
         void Start()
         {
             if (fsm == null) return;
-            fsm = (FiniteStateMachine)ScriptableObject.CreateInstance(fsm.GetType().Name);
+            fsm = Instantiate(fsm);
             fsm.Construct(gameObject);
             fsm.OnEnter();
             currentState = fsm.currentState.Name;

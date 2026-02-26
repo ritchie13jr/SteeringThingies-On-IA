@@ -12,6 +12,7 @@ public class ZOMBIE_BLACKBOARD : MonoBehaviour
     void Awake()
     {
         wanderPoints = GameObject.FindGameObjectsWithTag("WANDERPOINT");
+        wanderCollectPoints = GameObject.FindGameObjectsWithTag("COLLECT_WAYPOINTS");
     }
 
     public GameObject GetRandomWanderPoint ()

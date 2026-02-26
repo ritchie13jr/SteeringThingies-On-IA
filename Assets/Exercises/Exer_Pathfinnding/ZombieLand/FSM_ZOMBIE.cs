@@ -3,8 +3,8 @@ using UnityEngine;
 using Steerings;
 using Pathfinding;
 
-[CreateAssetMenu(fileName = "FSM_JOSEPZ", menuName = "Finite State Machines/FSM_JOSEPZ", order = 1)]
-public class FSM_JOSEPZ : FiniteStateMachine
+[CreateAssetMenu(fileName = "FSM_ZOMBIE", menuName = "Finite State Machines/FSM_ZOMBIE", order = 1)]
+public class FSM_ZOMBIE : FiniteStateMachine
 {
     ZOMBIE_BLACKBOARD blackboard;
     PathFeeder feeder;
@@ -16,10 +16,12 @@ public class FSM_JOSEPZ : FiniteStateMachine
     {
         blackboard = GetComponent<ZOMBIE_BLACKBOARD>();
         feeder = GetComponent<PathFeeder>();
-        pathFollowing = GetComponent<PathFollowing>();  
+        pathFollowing = GetComponent<PathFollowing>();
         currentCollectWaypoint = blackboard.GetRandomCollectWanderPoint();
-       
-        base.OnEnter(); 
+        Debug.Log("HEre");
+
+
+        base.OnEnter();
     }
 
     public override void OnExit()
@@ -29,29 +31,30 @@ public class FSM_JOSEPZ : FiniteStateMachine
     }
 
     public override void OnConstruction()
-    {    
-        State WANDERING = new State("Wandering",
-            () => { 
+    {
+        State WANDERING = new State("WANDERING",
+            () => {
+                Debug.Log("HEre");
                 feeder.target = blackboard.GetRandomWanderPoint();
                 feeder.enabled = true;
-                }, 
-            () => { }, 
+            },
+            () => { },
             () => {
                 pathFollowing.enabled = false;
-            }  
+            }
         );
 
         State REACHGUT = new State("REACH GUT",
             () => {
                 feeder.target = gut;
                 feeder.enabled = true;
-                }, 
-            () => { }, 
+            },
+            () => { },
             () => {
                 gut.transform.parent = gameObject.transform;
                 gut.tag = "NONE";
                 feeder.enabled = false;
-            }  
+            }
         );
 
         State COLLECTGUT = new State("COLLECT GUT",
@@ -59,53 +62,56 @@ public class FSM_JOSEPZ : FiniteStateMachine
                 currentCollectWaypoint = blackboard.GetRandomCollectWanderPoint();
                 feeder.target = currentCollectWaypoint;
                 feeder.enabled = true;
-                }, 
-            () => { }, 
+            },
+            () => { },
             () => {
                 feeder.enabled = false;
                 gut.transform.parent = null;
-            }  
+            }
         );
 
 
-         //STAGE 2: create the transitions with their logic(s)
-         //* ---------------------------------------------------
+        //STAGE 2: create the transitions with their logic(s)
+        //* ---------------------------------------------------
 
         Transition wanderPointReached = new Transition("WanderPoint Reached",
             () => {
                 return SensingUtils.DistanceToTarget(gameObject, feeder.target) <= blackboard.pointReachedRadius;
-                }
+            }
         );
 
         Transition gutDetected = new Transition("Gut Detected",
             () => {
                 gut = SensingUtils.FindRandomInstanceWithinRadius(gameObject, "FREE_GUTS", blackboard.gutDetectedRadius);
                 return gut != null;
-                }
+            }
         );
 
         Transition gutCollected = new Transition("Gut Collected",
             () => {
                 return SensingUtils.DistanceToTarget(gameObject, currentCollectWaypoint) <= blackboard.pointReachedRadius;
-                }
+            }
         );
 
         Transition gutReached = new Transition("Gut Reached",
             () => {
-                return SensingUtils.DistanceToTarget(gameObject, gut) <= blackboard.pointReachedRadius;
-                }
+                if (gut!= null)
+                    return SensingUtils.DistanceToTarget(gameObject, gut) <= blackboard.pointReachedRadius;
+
+                return false;
+            }
         );
 
 
 
 
-         //STAGE 3: add states and transitions to the FSM 
-         //* ----------------------------------------------
-            
+        //STAGE 3: add states and transitions to the FSM 
+        //* ----------------------------------------------
+
         AddStates(WANDERING, REACHGUT, COLLECTGUT);
 
-        AddTransition(WANDERING, wanderPointReached, WANDERING);
         AddTransition(WANDERING, gutDetected, REACHGUT);
+        AddTransition(WANDERING, wanderPointReached, WANDERING);
         AddTransition(REACHGUT, gutReached, COLLECTGUT);
         AddTransition(COLLECTGUT, gutCollected, WANDERING);
 
@@ -114,7 +120,7 @@ public class FSM_JOSEPZ : FiniteStateMachine
 
         initialState = WANDERING;
 
-         
+
 
     }
 }

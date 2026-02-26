@@ -1,7 +1,7 @@
 
 using BTs;
 
-public class ACTION_MAkeWithdrawal : Action
+public class ACTION_MakeWithdrawal : Action
 {
     
     public override Status OnTick ()
