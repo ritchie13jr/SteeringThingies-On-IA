@@ -16,6 +16,10 @@ class ACTION_ChooseRandomCorner : Action
 
         /* COMPLETE */
 
-        return Status.FAILED;  // change when complete (you don't want this action to fail)
+        GameObject randomCorner = bl.GetRandomCorner();
+
+        bl.Put(keyoutCorner, randomCorner);
+
+        return Status.SUCCEEDED;  // change when complete (you don't want this action to fail)
     }
 }

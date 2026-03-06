@@ -12,4 +12,5 @@ public class ANT_Blackboard_TWO : DynamicBlackboard
     public float lowSW = 0.2f;
     public float highSW = 0.8f;
     public float seedDetectionRadius = 60;
+    public string seedTag = "SEED";
 }

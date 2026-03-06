@@ -1,4 +1,4 @@
-using UnityEngine;
+    using UnityEngine;
 using BTs;
 
 [CreateAssetMenu(fileName = "BT_WORK", menuName = "Behaviour Trees/BT_WORK", order = 1)]
@@ -9,7 +9,7 @@ public class BT_WORK : BehaviourTree
     public override void OnConstruction()
     {
         root = new Sequence(
-            new RepeatTimesDecorator("3",
+            new RepeatUntilFailureDecorator(
                                      new Sequence(
                                          new ACTION_Arrive("theBoxesArea"),
                                          new BT_TRANSPORT_BOX()

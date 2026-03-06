@@ -20,6 +20,12 @@ TagManager:
   - FIRE
   - NONE
   - FREE_GUTS
+  - BEER
+  - BUBBLE
+  - BOX
+  - TRASH
+  - MONEY
+  - DROPPED
   layers:
   - Default
   - TransparentFX

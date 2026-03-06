@@ -37,8 +37,13 @@ public class CONDITION_FeelUnsafe : Condition
     public override bool Check ()
     {
 
-       /* COMPLETE */
+        /* COMPLETE */
 
-       return lastTick;
+        if (SensingUtils.DistanceToTarget(gameObject, attractor) >= safeRadius)
+            lastTick = true;
+        else
+            lastTick = false;
+
+            return lastTick;
     }
 }
