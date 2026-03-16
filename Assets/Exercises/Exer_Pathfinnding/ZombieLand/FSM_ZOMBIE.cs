@@ -34,13 +34,12 @@ public class FSM_ZOMBIE : FiniteStateMachine
     {
         State WANDERING = new State("WANDERING",
             () => {
-                Debug.Log("HEre");
                 feeder.target = blackboard.GetRandomWanderPoint();
                 feeder.enabled = true;
             },
             () => { },
             () => {
-                pathFollowing.enabled = false;
+                feeder.enabled = false;
             }
         );
 
