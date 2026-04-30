@@ -11,11 +11,20 @@ public class BT_DAISY : BehaviourTree
     
     public override void OnConstruction()
     {
-        Sequence DaisyAlone = new Sequence(
-                new ACTION_ChooseRandomCorner("randomCorner"),
-                new ACTION_Arrive("randomCorner"
+        DynamicSelector TopDaisy = new DynamicSelector();
+
+        TopDaisy.AddChild(
+            new CONDITION_InstanceNear("samDetectionRadius", "samTag", "true", "samKey"),
+            new Sequence(
+                new ACTION_Arrive("samKey", "25"),
+                new BT_GSWHD()
             ));
 
-        root = new RepeatForeverDecorator(DaisyAlone);
+        TopDaisy.AddChild(
+            new CONDITION_AlwaysTrue(),
+            new BT_DaisyAlone());
+
+
+        root = TopDaisy;
     }
 }

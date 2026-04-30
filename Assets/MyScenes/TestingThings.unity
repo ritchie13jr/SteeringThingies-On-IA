@@ -322,7 +322,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1183017620}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MySeekAndFlee, Assembly-CSharp
         m_MethodName: OnAccelartionChanged
         m_Mode: 0
@@ -844,7 +844,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1183017623}
   - component: {fileID: 1183017622}
-  - component: {fileID: 1183017620}
+  - component: {fileID: 1183017625}
   - component: {fileID: 1183017624}
   m_Layer: 0
   m_Name: Enemy""
@@ -853,23 +853,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1183017620
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1183017619}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fe30a1f5461e264081c53dfd83c8e6f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MySeekAndFlee
-  m_Target: {fileID: 453293093}
-  m_Behaviour: 0
-  m_MaxSpeed: 15
-  m_MaxAcceleration: 10
-  m_AccelerationSl: {fileID: 413760046}
 --- !u!212 &1183017622
 SpriteRenderer:
   serializedVersion: 2
@@ -954,16 +937,65 @@ MonoBehaviour:
   m_GameObject: {fileID: 1183017619}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2029379a396d0614799a0d8243400dad, type: 3}
+  m_Script: {fileID: 11500000, guid: 0b1c6fa0d5ba45c4eb509c1ad6e53e63, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MyArrive
+  m_EditorClassIdentifier: Assembly-CSharp::Steerings.Arrive
+  rotationalPolicy: 3
   target: {fileID: 453293093}
-  m_MaxSpeed: 14
-  m_MaxAcceleration: 10
-  timeToDesiredSpeed: 0.5
-  rotationSpeed: 5
-  closeEnoughRange: 1
-  slowDownRange: 5
+--- !u!114 &1183017625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1183017619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15fadfb23a909584e8ff82b91a0977c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Steerings.SteeringContext
+  maxAcceleration: 40
+  maxSpeed: 10
+  clipVelocity: 1
+  maxAngularAcceleration: 360
+  maxAngularSpeed: 90
+  clipAngularSpeed: 1
+  timeToDesiredSpeed: 0.1
+  closeEnoughRadius: 1
+  slowdownRadius: 10
+  timeToDesiredAngularSpeed: 0.1
+  closeEnoughAngle: 2
+  slowDownAngle: 10
+  maxPredictionTime: 3
+  showFutureTargetGizmos: 0
+  idTag: 
+  repulsionThreshold: 15
+  cohesionThreshold: 30
+  coneOfVisionAngle: 270
+  applyVision: 0
+  cohesionWeight: 0.3
+  repulsionWeight: 0.5
+  alignmentWeight: 0.2
+  addWanderIfZero: 1
+  wanderRate: 30
+  wanderRadius: 10
+  wanderOffset: 20
+  showWanderGizmos: 0
+  wanderTargetOrientation: 0
+  seekWeight: 0.2
+  lookAheadLength: 10
+  avoidDistance: 12
+  secondaryWhiskerAngle: 30
+  secondaryWhiskerRatio: 0.7
+  perseveranceTime: 0
+  showAvoidanceGizmos: 0
+  perseveranceElapsed: 0
+  persevering: 0
+  avoidanceAcceleration: {x: 0, y: 0, z: 0}
+  velocity: {x: 0, y: 0, z: 0}
+  speed: 0
+  angularSpeed: 0
+  groupManager: {fileID: 0}
 --- !u!1 &1519148080
 GameObject:
   m_ObjectHideFlags: 0
